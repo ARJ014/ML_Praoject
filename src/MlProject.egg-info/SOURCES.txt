@@ -1,0 +1,12 @@
+setup.py
+src/__init__.py
+src/error.py
+src/logger.py
+src/MlProject.egg-info/PKG-INFO
+src/MlProject.egg-info/SOURCES.txt
+src/MlProject.egg-info/dependency_links.txt
+src/MlProject.egg-info/top_level.txt
+src/componets/__init__.py
+src/componets/data_ingestion.py
+src/componets/data_transformation.py
+src/componets/model_trainer.py
