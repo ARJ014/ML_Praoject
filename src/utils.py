@@ -4,8 +4,10 @@ import numpy as np
 import pandas as pd
 import pickle
 
+
 from error import CustomException
 from sklearn.metrics import r2_score
+from sklearn.model_selection import GridSearchCV
 
 
 def save_object(path, obj):
@@ -19,13 +21,28 @@ def save_object(path, obj):
         return CustomException(e, sys)
 
 
-def evaluate_models(x_trian, x_test, y_train, y_test, models):
+def load_object(path):
+    try:
+        return pickle.load(open(path, "rb"))
+
+    except Exception as e:
+        return CustomException(e, sys)
+
+
+def evaluate_models(x_trian, x_test, y_train, y_test, models, params):
     report = {}
     try:
         for i in range(len(models)):
             model = list((models.values()))[i]
-            model.fit(x_trian, y_train)
+            param = params[list(models.keys())[i]]
 
+            gs = GridSearchCV(
+                estimator=model, param_grid=param, n_jobs=-1, verbose=1, cv=3
+            )
+            gs.fit(x_trian, y_train)
+
+            model.set_params(**gs.best_params_)
+            model.fit(x_trian, y_train)
             y_train_pred = model.predict(x_trian)
             y_test_pred = model.predict(x_test)
 
@@ -37,4 +54,5 @@ def evaluate_models(x_trian, x_test, y_train, y_test, models):
         return report
 
     except Exception as e:
-        return CustomException(e, sys)
+        # print(e)
+        raise CustomException(e, sys)
